@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import {
   Link,
   useCatch,
+  useFetcher,
   useLoaderData,
   useLocation,
   useParams,
@@ -15,6 +16,7 @@ import { currencyFormatter, parseDate } from "~/utils";
 import type { Deposit } from "~/models/deposit.server";
 import { createDeposit } from "~/models/deposit.server";
 import invariant from "tiny-invariant";
+import { useEffect } from "react";
 
 type LoaderData = {
   customerName: string;
@@ -175,6 +177,14 @@ export default function InvoiceRoute() {
 function Deposits() {
   const data = useLoaderData() as LoaderData;
   // 💿 call useFetcher here to get the fetcher for the form
+  // https://remix.run/docs/en/v1/api/remix#usefetcher
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    console.log("fetcher.state", fetcher.state);
+    console.log("fetcher.submission", fetcher.submission);
+    console.log("fetcher.type", fetcher.type);
+  }, [fetcher]);
 
   return (
     <div>
@@ -195,7 +205,7 @@ function Deposits() {
         <div>None yet</div>
       )}
       {/* 💿 change this to your fetcher.Form */}
-      <form
+      <fetcher.Form
         method="post"
         className="grid grid-cols-1 gap-x-4 gap-y-2 lg:grid-cols-2"
       >
@@ -252,7 +262,7 @@ function Deposits() {
             </button>
           </div>
         </div>
-      </form>
+      </fetcher.Form>
     </div>
   );
 }
